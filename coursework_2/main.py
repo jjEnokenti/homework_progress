@@ -1,3 +1,7 @@
+"""
+Игра по составлению слов из букв заданного слова
+"""
+
 from random import choice
 
 from utils import load_random_word, change_word_ending
@@ -29,9 +33,6 @@ def game_loop(name_, word_):
     # Коллекция для учета подсказанных слов
     used_help_word = []
 
-    # Запрос ответа от пользователя
-    # answer_subword = input('Поехали, Ваше первое слово?: ')
-
     # Основной цикл
     while True:
 
@@ -51,6 +52,7 @@ def game_loop(name_, word_):
             if answer_subword in ('помощь', 'help'):
                 # Цикл, чтоб не подсказывать слова, которые уже были подсказаны
                 while True:
+                    # Выбор рандомного слова для подсказки
                     help_word = choice(word_.get_subwords)
                     if help_word not in used_help_word or \
                             help_word not in name_.get_used_word:
