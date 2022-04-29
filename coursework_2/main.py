@@ -35,7 +35,7 @@ def game_loop(name_, word_):
     stat = Stats(name_, count_subwords)
 
     # Основной цикл, пока есть попытки будем играть
-    while attempt:
+    while True:
 
         # Ввод слова пользователем
         answer = input('Введите Ваше слово: \n').lower()
