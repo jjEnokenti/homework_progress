@@ -42,3 +42,25 @@ def change_word_ending(word_to_change, num):
         changed_word = word_to_change + 'о'
         return changed_word
 
+
+def valid_hints(name, word):
+    """
+    Функция принимает в качестве аргументов объекты классов Player и BasicWord
+    и на основе данных возвращает подсказку или сообщает о исчерпании лимита подсказок
+    :param name экземпляр класса Player: 
+    :param word экземпляр класса BasicWord:
+    :return hint либо лимит исчерпан:
+    """
+    if word.get_hint(name):
+        # Цикл, чтоб не подсказывать слова, которые уже были подсказаны
+        while True:
+            # Выбор рандомного слова для подсказки
+            hint = choice(word.get_subwords)
+
+            # Проверка на было ли слово уже подсказано
+            if hint not in name.get_hints and hint not in name.get_used_words:
+                # Добавления подсказанного слова в коллекцию уже подсказанных
+                name.add_hint(hint)
+                return f'Попробуйте слово: {hint}'
+
+    return 'Вы исчерпали лимит подсказок, подумайте еще раз!'
