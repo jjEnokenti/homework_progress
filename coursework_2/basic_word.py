@@ -1,10 +1,13 @@
+from random import choice
+
+
 class BasicWord:
     """
     Описание класса слов с подсловами
 
     Поля:
-    self._word - Слово для которого отгадываются подслова
-    self._subwords - коллекция подслов слова word
+    self.__word - Слово для которого отгадываются подслова
+    self.__subwords - коллекция подслов слова word
 
     Методы:
     is_correct(self, subword) - принимает подслова от
@@ -13,31 +16,39 @@ class BasicWord:
     get_subwords(self) - геттер, возвращает коллекцию подслов
     get_word(self) - геттер, возвращает основное слово
     get_feedback(self, subword) - возвращает фидбек правильно не правильно
+    minimal_word(self) - Возвращает самое короткое слово
+    give_hint(self) - дает подсказку
     """
 
     def __init__(self, word, subwords):
-        self._word = word
-        self._subwords = subwords
+        self.__word = word
+        self.__subwords = list(set(subwords))
 
     def __repr__(self):
-        return self._word
+        return self.__word
 
     def is_correct(self, subword):
-        return subword.lower() in self._subwords
+        return subword.lower() in self.__subwords
 
     @property
-    def get_quantity_subwords(self):
-        return len(self._subwords)
+    def count_subwords(self):
+        return len(self.__subwords)
 
     @property
     def get_subwords(self):
-        return self._subwords
+        return self.__subwords
 
     @property
     def get_word(self):
-        return self._word
+        return self.__word
+
+    def get_hint(self):
+        return choice(self.__subwords)
 
     def get_feedback(self, subword):
         if self.is_correct(subword):
             return 'Верно, молодец!'
         return 'Неверно, подумай еще!'
+
+    def minimal_word(self):
+        return min(self.__subwords, key=len)
