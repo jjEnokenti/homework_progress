@@ -2,9 +2,9 @@
 Игра по составлению слов из букв заданного слова
 """
 
-from utils import load_random_word, change_word_ending
 from player import Player
 from stats import Stats
+from utils import load_random_word, change_word_ending
 
 
 def game_loop(name_, word_):
