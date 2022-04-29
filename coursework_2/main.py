@@ -2,8 +2,6 @@
 Игра по составлению слов из букв заданного слова
 """
 
-from random import choice
-
 from utils import load_random_word, change_word_ending
 from player import Player
 from stats import Stats
@@ -16,56 +14,54 @@ def game_loop(name_, word_):
     :param word_:
     :return stat: возвращает статистику
     """
-    
+
     # Кол-во подслов в слове
-    count_subwords = word_.get_quantity_subwords
-    # Приветственное вступление и знакомство с условиями игры
-    # функция change_word_ending("слов", count_subwords) склоняет "слово" в зависимости от кол-ва слов
-    print(f'Привет, {name_.get_name.title()}!\n'
-          f'Составьте {count_subwords} {change_word_ending("слов", count_subwords)} из слова {word_.get_word.upper()}\n'
-          'Слова должны быть не короче 3 букв\n'
-          'На каждое слово дается 2 попытки'
-          'Если хотите получить помощь введите "Help/Помощь"\n'
-          'Если хотите завершить игру введите "Стоп/Stop"\n'
-          'Чтоб посмотреть отгаданные слова введите "Мои ответы"\n')
-    
-    # Коллекция для учета подсказанных слов
-    used_help_word = list()
+    count_subwords = word_.count_subwords
     # Общее кол-во попыток
     attempt = count_subwords * 2
     
+    # Приветственное вступление и знакомство с условиями игры
+    # функция change_word_ending("слов", count_subwords) склоняет "слово" в зависимости от кол-ва слов
+    print(f'Привет, {name_.get_name.title()}!',
+          f'Составьте {count_subwords} {change_word_ending("слов", count_subwords)} из слова {word_.get_word.upper()}',
+          f'Слова должны быть не короче {len(word_.minimal_word())} букв',
+          'На каждое слово дается 2 попытки',
+          'Если хотите получить помощь введите "Help/Помощь"',
+          'Если хотите завершить игру введите "Стоп/Stop"',
+          'Чтоб посмотреть отгаданные слова введите "Мои ответы"'
+          'Поехали, Ваше первое слово?', sep='\n')
+
     # Экземпляр класса Stats
     stat = Stats(name_, count_subwords)
 
     # Основной цикл, пока есть попытки будем играть
     while attempt:
-        
+
         # Ввод слова пользователем
-        answer_subword = input('Введите Ваше слово: \n').lower()
+        answer = input('Введите Ваше слово: \n').lower()
 
         # Условие на остановку игры по желанию игрока
-        if answer_subword in ('stop', 'стоп'):
+        if answer in ('stop', 'стоп'):
             break
 
         # Случай если было введено ключевое слово игры
-        if answer_subword in ('помощь', 'help', 'мои ответы'):
+        if answer in ('помощь', 'help', 'мои ответы'):
             # Если введенное слово помощь или help
-            if answer_subword in ('помощь', 'help'):
+            if answer in ('помощь', 'help'):
                 # Проверка лимита подсказок
-                if len(used_help_word) > 2:
+                if name_.count_hints() > 2:
                     print('Вы исчерпали лимит подсказок, подумайте еще раз!\n')
                 else:
                     # Цикл, чтоб не подсказывать слова, которые уже были подсказаны
                     while True:
                         # Выбор рандомного слова для подсказки
-                        help_word = choice(word_.get_subwords)
+                        hint = word_.get_hint()
 
                         # Если слова нет в среди уже подсказанных и уже отгаданных слов, то подскажет слово
-                        if help_word not in used_help_word and \
-                                help_word not in name_.get_used_word:
-                            print(f'Попробуйте ввести слово: {help_word}\n')
+                        if hint not in zip(name_.get_hints, name_.get_used_words):
+                            print(f'Попробуйте слово: {hint}\n')
                             # Добавления подсказанного слова в коллекцию уже подсказанных
-                            used_help_word.append(help_word)
+                            name_.add_hint(hint)
                             break
             else:
                 # Выдача пользователю на экран угаданных слов
@@ -73,21 +69,23 @@ def game_loop(name_, word_):
 
         else:
             # Проверка на правильность введенного слова
-            if word_.is_correct(answer_subword):
+            if word_.is_correct(answer):
                 # Проверка на было ли верное слово введено ранее
-                if name_.is_used(answer_subword):
+                if name_.is_used(answer):
                     print('Это слово уже было\n')
                     continue
                 # Добавить в угаданные слова пользователя
                 else:
-                    name_.add_word(answer_subword)
-                    
+                    name_.add_word(answer)
+
             # Фидбэк по результатам проверки
-            print(f'{word_.get_feedback(answer_subword)}\n')
-            
-            # Использование попытки
+            print(f'{word_.get_feedback(answer)}\n')
+
             attempt -= 1
-            
+            # Завершение игры по окончанию попыток либо победе
+            if not attempt or name_.count_words() == count_subwords:
+                break
+
     stat.save_history()
 
     return print(f'\n{stat}')
