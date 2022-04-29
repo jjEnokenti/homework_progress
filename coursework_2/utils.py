@@ -4,7 +4,7 @@ import requests
 
 from basic_word import BasicWord
 
-PATH = 'https://jsonkeeper.com/b/G8VP'
+PATH = 'https://jsonkeeper.com/b/K8ZH'
 
 
 def load_random_word(path=PATH):
