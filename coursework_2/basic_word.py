@@ -1,6 +1,3 @@
-from random import choice
-
-
 class BasicWord:
     """
     Описание класса слов с подсловами
@@ -42,8 +39,10 @@ class BasicWord:
     def get_word(self):
         return self.__word
 
-    def get_hint(self):
-        return choice(self.__subwords)
+    def get_hint(self, name):
+        if name.count_hints() < 3:
+            return True
+        return False
 
     def get_feedback(self, subword):
         if self.is_correct(subword):
