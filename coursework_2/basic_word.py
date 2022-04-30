@@ -14,7 +14,7 @@ class BasicWord:
     get_word(self) - геттер, возвращает основное слово
     get_feedback(self, subword) - возвращает фидбек правильно не правильно
     minimal_word(self) - Возвращает самое короткое слово
-    give_hint(self) - дает подсказку
+    get_hint(self, player) - дает подсказку либо возвращает состояние лимита
     """
 
     def __init__(self, word, subwords):
@@ -39,8 +39,8 @@ class BasicWord:
     def get_word(self):
         return self.__word
 
-    def get_hint(self, name):
-        if name.count_hints() < 3:
+    def get_hint(self, player):
+        if player.count_hints() < 3:
             return True
         return False
 
